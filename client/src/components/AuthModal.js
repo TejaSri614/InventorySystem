@@ -21,7 +21,7 @@ const AuthModal = ({ onClose }) => {
       setFormData({ email: '', password: '' });
     } else {
       // register new user
-      try {
+      try { // your backend base URL
         await axios.post('https://inventorysystem-backend-8844.onrender.com/api/auth/register', formData);
         alert('Registered successfully! You can now log in.');
         setFormData({ email: '', password: '' });
