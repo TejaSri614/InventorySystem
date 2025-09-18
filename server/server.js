@@ -132,11 +132,9 @@ app.post('/api/products/:productId/restock', async (req, res) => {
 });
 
 // ----------------- MongoDB Connection -----------------
-const PORT = 5000;
-const MONGO_URI = process.env.MONGO_URI;
-
+const PORT = process.env.PORT || 5000;
 mongoose
-  .connect(MONGO_URI)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
