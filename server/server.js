@@ -29,12 +29,13 @@ const app = express();
 // );
 
 app.use(cors({
-  origin: "https://inventory-system-black-six.vercel.app", // or "*" for all origins
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true // if using cookies
+  origin: "https://inventory-system-black-six.vercel.app",
+  credentials: true,
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
 }));
-// Handle preflight requests globally
-app.options('*', cors());
+app.options('*', cors()); // must be **before routes**
+
 
 // ----------------- Middleware -----------------
 app.use(express.json());
