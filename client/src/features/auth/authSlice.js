@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/login', // full backend URL
+        'https://inventorysystem-qna4.onrender.com/api/auth/login', // full backend URL
         credentials,
         {
           withCredentials: true,               // include cookies/session
