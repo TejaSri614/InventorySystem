@@ -4,13 +4,10 @@ const cors = require('cors');
 require('dotenv').config(); // <-- load .env variables here
 
 const app = express();
+app.use(cors({
+  origin: '*'
+}));
 
-app.use(
-  cors({
-    origin: 'inventory-system-black-six.vercel.app', // React app
-    credentials: true,
-  })
-);
 app.use(express.json());
 
 // ----------------- Schemas -----------------
