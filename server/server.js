@@ -7,32 +7,32 @@ require('dotenv').config();
 const app = express();
 
 // ----------------- CORS Setup -----------------
-// const allowedOrigins = [
-//   'http://localhost:3000', // local dev
-//   'https://inventory-system-black-six.vercel.app' // deployed frontend
-// ];
+const allowedOrigins = [
+  'http://localhost:3000', // local dev
+  'https://inventorysystem-frontend.onrender.com' // deployed frontend
+];
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin) return callback(null, true); // allow requests with no origin (Postman, mobile)
-//       if (allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error(`Origin ${origin} not allowed by CORS`));
-//       }
-//     },
-//     credentials: true, // allow cookies
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//   })
-// );
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow requests with no origin (Postman, mobile)
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true, // allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
-app.use(cors({
-  origin: "https://inventorysystem-frontend.onrender.com",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: "https://inventorysystem-frontend.onrender.com",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true
+// }));
 
 
 
