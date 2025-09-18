@@ -1,31 +1,37 @@
+// ----------------- backend/index.js -----------------
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); // <-- load .env variables here
+require('dotenv').config();
 
 const app = express();
 
+// ----------------- CORS Setup -----------------
 const allowedOrigins = [
-  'http://localhost:3000',          
-  'https://inventory-system-black-six.vercel.app' // use full URL with https
+  'http://localhost:3000', // local dev
+  'https://inventory-system-black-six.vercel.app' // deployed frontend
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like Postman or mobile apps)
-      if (!origin) return callback(null, true);
-
+      if (!origin) return callback(null, true); // allow requests with no origin (Postman, mobile)
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
-    credentials: true,
+    credentials: true, // allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
+// Handle preflight requests globally
+app.options('*', cors());
+
+// ----------------- Middleware -----------------
 app.use(express.json());
 
 // ----------------- Schemas -----------------
@@ -49,50 +55,54 @@ const Product = mongoose.model('Product', productSchema);
 
 // ----------------- Auth Routes -----------------
 app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ message: 'Email and password required' });
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ message: 'Email and password required' });
 
-  const user = await User.findOne({ email });
-  if (!user || user.password !== password)
-    return res.status(400).json({ message: 'Invalid credentials' });
+    const user = await User.findOne({ email });
+    if (!user || user.password !== password)
+      return res.status(400).json({ message: 'Invalid credentials' });
 
-  res.json({
-    message: 'Login successful',
-    user: { id: user._id, email: user.email },
-  });
+    res.json({
+      message: 'Login successful',
+      user: { id: user._id, email: user.email },
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 });
 
 app.post('/api/auth/register', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ message: 'Email and password required' });
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ message: 'Email and password required' });
 
-  let existing = await User.findOne({ email });
-  if (existing) return res.status(400).json({ message: 'User already exists' });
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: 'User already exists' });
 
-  const user = await User.create({ email, password });
-  res.json(user);
+    const user = await User.create({ email, password });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 });
 
 // ----------------- Product Routes -----------------
 app.get('/api/products', async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 });
 
 app.post('/api/products', async (req, res) => {
-  const { productId, name, category, description, stockAvailable, image, price } = req.body;
   try {
-    const product = await Product.create({
-      productId,
-      name,
-      category,
-      description,
-      stockAvailable,
-      image,
-      price,
-    });
+    const { productId, name, category, description, stockAvailable, image, price } = req.body;
+    const product = await Product.create({ productId, name, category, description, stockAvailable, image, price });
     res.json(product);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -100,22 +110,25 @@ app.post('/api/products', async (req, res) => {
 });
 
 app.post('/api/products/:productId/restock', async (req, res) => {
-  const { productId } = req.params;
-  const { quantity } = req.body;
+  try {
+    const { productId } = req.params;
+    const { quantity } = req.body;
 
-  // Using your custom productId:
-  const product = await Product.findOne({ productId });
-  if (!product) return res.status(404).json({ message: 'Product not found' });
+    const product = await Product.findOne({ productId });
+    if (!product) return res.status(404).json({ message: 'Product not found' });
 
-  product.stockAvailable += Number(quantity);
-  await product.save();
+    product.stockAvailable += Number(quantity);
+    await product.save();
 
-  res.json(product);
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 });
 
 // ----------------- MongoDB Connection -----------------
-const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
   .connect(MONGO_URI)
@@ -123,4 +136,4 @@ mongoose
     console.log('MongoDB connected');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.error('MongoDB connection error:', err));
