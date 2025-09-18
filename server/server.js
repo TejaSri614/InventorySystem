@@ -7,7 +7,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:3000', // React app
+    origin: 'inventory-system-black-six.vercel.app', // React app
     credentials: true,
   })
 );
