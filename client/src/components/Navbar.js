@@ -153,7 +153,84 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden mt-4 space-y-3">
-          {/* … same as your existing mobile menu … */}
+          <span
+            className="block font-semibold text-lg cursor-pointer"
+            onClick={() => {
+              navigate('/');
+              setMobileMenuOpen(false);
+            }}
+          >
+            Home
+          </span>
+          <span
+            className="block font-semibold text-lg cursor-pointer"
+            onClick={() => {
+              navigate('/dashboard');
+              setMobileMenuOpen(false);
+            }}
+          >
+            Dashboard
+          </span>
+          <span
+            className="block text-lg font-semibold cursor-pointer"
+            onClick={() => {
+              navigate('/productslist');
+              setMobileMenuOpen(false);
+            }}
+          >
+            Products
+          </span>
+
+          {/* Mobile Category Dropdown */}
+          <div className="relative">
+            <span
+              className="block text-lg font-semibold cursor-pointer"
+              onClick={() => setShowDropdown((prev) => !prev)}
+            >
+              Category ▾
+            </span>
+
+            {showDropdown && (
+              <div className="bg-white text-black mt-2 rounded shadow-md w-full">
+                {categories.map((cat) => (
+                  <div
+                    key={cat}
+                    onClick={() => {
+                      navigate(`/productslist?category=${encodeURIComponent(cat)}`);
+                      setShowDropdown(false);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                  >
+                    {cat}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Auth Buttons */}
+          {user ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setShowModal(true);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-200"
+            >
+              Login / Register
+            </button>
+          )}
         </div>
       )}
 
