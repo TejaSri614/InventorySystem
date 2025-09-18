@@ -4,9 +4,27 @@ const cors = require('cors');
 require('dotenv').config(); // <-- load .env variables here
 
 const app = express();
-app.use(cors({
-  origin: '*'
-}));
+
+const allowedOrigins = [
+  'http://localhost:3000',          
+  'https://inventory-system-black-six.vercel.app' // use full URL with https
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like Postman or mobile apps)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
