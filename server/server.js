@@ -29,12 +29,12 @@ const app = express();
 // );
 
 app.use(cors({
-  origin: "https://inventory-system-black-six.vercel.app", // or "*" for all origins
+  origin: "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true // if using cookies
+  credentials: true
 }));
-// Handle preflight requests globally
-app.options('*', cors());
+
+
 
 // ----------------- Middleware -----------------
 app.use(express.json());
@@ -132,7 +132,7 @@ app.post('/api/products/:productId/restock', async (req, res) => {
 });
 
 // ----------------- MongoDB Connection -----------------
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
