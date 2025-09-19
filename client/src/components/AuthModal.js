@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthModal = ({ onClose }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.auth);
   // Redirect to home page after successful login
   useEffect(() => {
