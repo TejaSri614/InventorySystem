@@ -8,7 +8,7 @@ import { fetchProducts } from '../features/products/productsSlice';
 const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { items } = useSelector((state) => state.products);
+  const { items, loading } = useSelector((state) => state.products);
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
@@ -88,8 +88,8 @@ const Navbar = () => {
           </button>
         </div>
 
-  {/* Desktop Links */}
-  <div className="hidden lg:flex gap-6 items-center">
+        {/* Desktop Links */}
+        <div className="hidden lg:flex gap-6 items-center">
           <span
             className="font-semibold text-lg cursor-pointer"
             onClick={() => navigate('/')}
@@ -112,20 +112,19 @@ const Navbar = () => {
           {/* Category Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <span
-              className="text-lg font-semibold cursor-pointer"
-              onClick={() => setShowDropdown((prev) => !prev)}
+              className={`text-lg font-semibold cursor-pointer ${loading || categories.length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+              onClick={() => { if (!loading && categories.length > 0) setShowDropdown((prev) => !prev); }}
             >
               Category ▾
             </span>
-
-            {showDropdown && (
+            {showDropdown && categories.length > 0 && (
               <div className="absolute bg-white text-black mt-2 rounded shadow-md w-48">
                 {categories.map((cat) => (
                   <div
                     key={cat}
                     onClick={() => {
                       navigate(`/productslist?category=${encodeURIComponent(cat)}`);
-                      setShowDropdown(false); // close after selecting
+                      setShowDropdown(false);
                     }}
                     className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                   >
@@ -134,6 +133,7 @@ const Navbar = () => {
                 ))}
               </div>
             )}
+            {loading && <div className="absolute bg-white text-black mt-2 rounded shadow-md w-48 px-4 py-2">Loading…</div>}
           </div>
 
           {/* Auth Buttons */}
@@ -191,13 +191,12 @@ const Navbar = () => {
           {/* Mobile Category Dropdown */}
           <div className="relative">
             <span
-              className="block text-lg font-semibold cursor-pointer"
-              onTouchStart={() => setShowMobileDropdown((prev) => !prev)}
+              className={`block text-lg font-semibold cursor-pointer ${loading || categories.length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+              onTouchStart={() => { if (!loading && categories.length > 0) setShowMobileDropdown((prev) => !prev); }}
             >
               Category ▾
             </span>
-
-            {showMobileDropdown && (
+            {showMobileDropdown && categories.length > 0 && (
               <div className="bg-white text-black mt-2 rounded shadow-md w-full">
                 {categories.map((cat) => (
                   <div
@@ -214,6 +213,7 @@ const Navbar = () => {
                 ))}
               </div>
             )}
+            {loading && <div className="bg-white text-black mt-2 rounded shadow-md w-full px-4 py-2">Loading…</div>}
           </div>
 
           {/* Mobile Auth Buttons */}
