@@ -108,8 +108,8 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', async (req, res) => {
   try {
-    const { productId, name, category, description, stockAvailable, image, price } = req.body;
-    const product = await Product.create({ productId, name, category, description, stockAvailable, image, price });
+    const { productId, name, category, description, stockAvailable, minStock, image, price } = req.body;
+    const product = await Product.create({ productId, name, category, description, stockAvailable, minStock, image, price });
     res.json(product);
   } catch (err) {
     res.status(400).json({ message: err.message });
