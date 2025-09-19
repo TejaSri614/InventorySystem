@@ -11,7 +11,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false); // desktop
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false); // mobile
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // ref for the dropdown area
@@ -24,7 +25,7 @@ const Navbar = () => {
   // unique categories from products
   const categories = [...new Set(items.map((item) => item.category))];
 
-  // close dropdown on outside click
+  // close desktop dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -81,8 +82,8 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex gap-6 items-center">
+  {/* Desktop Links */}
+  <div className="hidden lg:flex gap-6 items-center">
           <span
             className="font-semibold text-lg cursor-pointer"
             onClick={() => navigate('/')}
@@ -185,19 +186,19 @@ const Navbar = () => {
           <div className="relative">
             <span
               className="block text-lg font-semibold cursor-pointer"
-              onClick={() => setShowDropdown((prev) => !prev)}
+              onClick={() => setShowMobileDropdown((prev) => !prev)}
             >
               Category ▾
             </span>
 
-            {showDropdown && (
+            {showMobileDropdown && (
               <div className="bg-white text-black mt-2 rounded shadow-md w-full">
                 {categories.map((cat) => (
                   <div
                     key={cat}
                     onClick={() => {
                       navigate(`/productslist?category=${encodeURIComponent(cat)}`);
-                      setShowDropdown(false);
+                      setShowMobileDropdown(false);
                       setMobileMenuOpen(false);
                     }}
                     className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
