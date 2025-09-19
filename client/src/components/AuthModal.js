@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/auth/authSlice';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AuthModal = ({ onClose }) => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
-
+  const { loading, error, user } = useSelector((state) => state.auth);
+  // Redirect to home page after successful login
+  useEffect(() => {
+    if (user && !loading && !error) {
+      navigate('/');
+      if (onClose) onClose();
+    }
+  }, [user, loading, error, navigate, onClose]);
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ email: '', password: '' });
 
