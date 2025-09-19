@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
+import { fetchProducts } from '../features/products/productsSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,11 @@ const Navbar = () => {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showDropdown]);
+
+  // Fetch products on mount to ensure categories are available
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   return (
     <nav className="bg-blue-600 text-white px-6 py-4 relative z-50">
