@@ -1,3 +1,4 @@
+
 // ----------------- backend/index.js -----------------
 const express = require('express');
 const mongoose = require('mongoose');
@@ -51,6 +52,7 @@ const productSchema = new mongoose.Schema({
   category: { type: String, required: true },
   description: { type: String },
   stockAvailable: { type: Number, default: 0 },
+  minStock: { type: Number, default: 0 },
   image: { type: String, default: '' },
   price: { type: Number, default: 0 },
 });
@@ -131,6 +133,17 @@ app.post('/api/products/:productId/restock', async (req, res) => {
   }
 });
 
+// Delete product by productId
+app.delete('/api/products/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const deleted = await Product.findOneAndDelete({ productId });
+    if (!deleted) return res.status(404).json({ message: 'Product not found' });
+    res.json({ message: 'Product deleted', product: deleted });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
 // ----------------- MongoDB Connection -----------------
 const PORT = process.env.PORT || 5000;
 mongoose

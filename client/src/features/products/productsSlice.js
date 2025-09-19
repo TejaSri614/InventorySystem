@@ -1,3 +1,4 @@
+
 // src/features/products/productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -66,6 +67,23 @@ export const addProduct = createAsyncThunk(
   }
 );
 
+// 4️⃣ Delete a product
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (productId, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${API_URL}/products/${productId}`, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return { productId };
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || 'Failed to delete product'
+      );
+    }
+  }
+);
 const productsSlice = createSlice({
   name: 'products',
   initialState: {
@@ -111,6 +129,13 @@ const productsSlice = createSlice({
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      // Delete product
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.items = state.items.filter((p) => p.productId !== action.payload.productId);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

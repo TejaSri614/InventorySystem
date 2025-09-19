@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, requestRestock, addProduct } from '../features/products/productsSlice';
+import { fetchProducts, requestRestock, addProduct, deleteProduct } from '../features/products/productsSlice';
+  // delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
+  const handleDelete = (e) => {
+    e.preventDefault();
+    if (deleteId) {
+      dispatch(deleteProduct(deleteId));
+      setDeleteId('');
+      setShowDeleteModal(false);
+    }
+  };
 import { useLocation } from 'react-router-dom';
 
 const ProductsList = () => {
@@ -79,12 +90,54 @@ const ProductsList = () => {
         <h1 className="text-2xl font-bold text-center">
           {categoryFilter ? `${categoryFilter} Products` : 'Products'}
         </h1>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-          >
-            Add Product
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+            >
+              Add Product
+            </button>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
+            >
+              Delete Product
+            </button>
+          </div>
+      {/* Modal for Delete Product */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Delete Product</h2>
+            <form onSubmit={handleDelete} className="space-y-3">
+              <input
+                type="text"
+                name="deleteId"
+                placeholder="Enter Product ID to delete"
+                value={deleteId}
+                onChange={e => setDeleteId(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                required
+              />
+              <div className="flex justify-end gap-2 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Delete Product
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
         </div>
 
         {/* Cards */}
