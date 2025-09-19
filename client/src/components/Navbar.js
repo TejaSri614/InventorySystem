@@ -187,6 +187,7 @@ const Navbar = () => {
             <span
               className="block text-lg font-semibold cursor-pointer"
               onClick={() => setShowMobileDropdown((prev) => !prev)}
+              onTouchStart={() => setShowMobileDropdown((prev) => !prev)}
             >
               Category ▾
             </span>
