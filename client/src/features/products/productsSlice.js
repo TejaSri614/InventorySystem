@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = 'https://inventorysystem-qna4.onrender.com'; // your backend base URL
+const API_URL = 'https://inventorysystem-backend-8844.onrender.com'; // your backend base URL
 
 // 1️⃣ Fetch all products
 export const fetchProducts = createAsyncThunk(
