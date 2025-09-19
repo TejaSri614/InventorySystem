@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, requestRestock, addProduct, deleteProduct } from '../features/products/productsSlice';
-  // delete modal state
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteId, setDeleteId] = useState('');
-  const handleDelete = (e) => {
-    e.preventDefault();
-    if (deleteId) {
-      dispatch(deleteProduct(deleteId));
-      setDeleteId('');
-      setShowDeleteModal(false);
-    }
-  };
 import { useLocation } from 'react-router-dom';
+
 
 const ProductsList = () => {
   const dispatch = useDispatch();
@@ -34,6 +24,10 @@ const ProductsList = () => {
     category: '',
     image: '',
   });
+
+  // delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -73,6 +67,15 @@ const ProductsList = () => {
       image: '',
     });
     setShowModal(false);
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    if (deleteId) {
+      dispatch(deleteProduct(deleteId));
+      setDeleteId('');
+      setShowDeleteModal(false);
+    }
   };
 
   if (loading) return <p className="text-center mt-10 text-gray-500">Loading products…</p>;
