@@ -64,7 +64,8 @@ const ProductsList = () => {
       stockAvailable: '',
       minStock: '',
       category: '',
-      image: '',
+      image:
+       '',
     });
     setShowModal(false);
   };
